@@ -1,5 +1,5 @@
 BPM - The Browser's Package Manager
------------------------------------
+===================================
 _bpm_ is a very early attempt at bringing some notion of package management to the browser. At this point it should merely be considered as a proof-of-concept, as it is a long ways away from prime time. If you decide to use it, please understand that you are using it at your own risk, but your feedback is totally welcome.
 
 Rationale
@@ -52,21 +52,94 @@ bpm.install('jquery', function(){
 _bpm_ goes above and beyond to be as useful as possible, in some cases correcting user-error by suggesting possible misspelling in package names or incorrect version numbers. You can play around with this functionality by using the `suggest` method, or you may even use the `list` method to quickly view the entire package catalog.
 
 ```javascript
-bpm.suggest('jqury'); // outputs "jquery"
+bpm.suggest('jqury'); // returns "jquery"
 bpm.list();           // outputs a comma separated list of packages
 bpm.manifest();       // outputs a list of packages you installed in the current browser session
 ```
 
 The Package Manager API
 -----------------------
-`bpm.install` ( `request`, `onsuccess` )
-
- - Installs one or more packages from the repository.
- - `request` `array|string|object` The request object is a message of intent to the installer. It can be a string name of a package to load, and object with a `key` and and optional `version` property, or an array of any either two. Note that you may omit the `version` property in the object to implicitly request the latest version of the library. Using the string form, or explicitly requesting 'latest' as the version has the same effect.
- - `onsuccess` `function` A function to be called when the request is fully processed.
+- `bpm.install` ( `request`, `onsuccess` )
+   - Installs one or more packages from the repository.
+   - `request` `array|string|object` The request object is a message of intent to the installer. It can be a string name of a package to load, and object with a `key` and and optional `version` property, or an array of any either two. Note that you may omit the `version` property in the object to implicitly request the latest version of the library. Using the string form, or explicitly requesting 'latest' as the version has the same effect.
+   - `onsuccess` `function` A function to be called when the request is fully processed.
  
-`bpm.suggest` ( `key` )
-
- - Uses a [levenshtein](http://en.wikipedia.org/wiki/Levenshtein_distance) distance calculation to determine the closest match to a package search term
- - `key` `string` a required string to search for
+- `bpm.suggest` ( `key` )
+   - Uses a [levenshtein distance](http://en.wikipedia.org/wiki/Levenshtein_distance) calculation to determine the closest match to a package search term
+   - `key` `string` A required string to search for
  
+- `bpm.list` ( )
+   - Outputs a list of available packages available to install
+   
+- `bpm.manifest` ( )
+   - Outputs a list of installed packages and their URLs
+   
+- `bpm.ready` ( `onready` )
+   - Insulates any code from running until all the package definitions are ready
+   - `onready` `function` A function that is called when _bpm_ is ready to install packages
+   
+- `bpm.load` ( `request` )
+   - An alias for `window.yepnope`, a script loader used internally by _bpm_. See the [official site](http://yepnopejs.com/) for usage.
+   
+- `bpm.url` ( `key`, `version` )
+   - Returns the CDN URL for a package given its version and package key
+   - `key` `string` The unique package key
+   - `version` `string` The unique package version
+   
+- `bpm.requires` ( `key` )
+   - Outputs a list of requirements given a package key
+   - `key` `string` The package to search requirements for 
+   
+- `bpm.latest` ( `key` )
+   - Outputs the latest version number for a given package
+   - `key` `string` The package to search for the latest version of
+   
+- `bpm.versions` ( `key` )
+   - Outputs the versions for a given package
+   - `key` `string` The package to search for the versions of
+   
+- `bpm.search` ( `request` )
+  - Takes a request object (like the one passed into `install`) and tries to find it.
+  - `request` `object|string` The request object to use in search
+  
+- `bpm.define` ( `key`, `definition` )
+  - Adds a package to the current bpm session
+  - `key` `string` The unique package key
+  - `definition` `object` The package definition (requires, cdn urls, etc.)
+  
+The Package Repository
+----------------------
+The package repository is simply a JavaScript file that is loaded via JSONP onto any requesting _bpm_ session. As may seem obvious, the package repository is named [packages.js](https://github.com/azoff/bpm/blob/master/packages.js), and can be found in the root of the repository. The production version of the repository is actually hosted by the GitHub CDN in the `gh-pages` branch of this repository. To contribute to the repository, just simply submit a pull request for that file, and I'll run some quick tests, and push it live. Packages are keyed on unique property names, so it's first come, first serve. The syntax is pretty simple, each package is a key/value pair, with the key being the unique identifier:
+
+```javascript
+{
+    
+ // ...
+ 
+ myplugin: {
+     
+     requires: ['anotherplugin', { key: 'jquery', version: '1.7.0' }], // an *optional* list of requirements
+     
+     versions: ['1.0.0', '1.1.0', '1.1.2b'], // a required list of version numbers supported by your CDN
+     
+     cdn: {
+         dev:  'https://mycdn.com/${v}/myplugin.js',    // a development version
+         prod: 'https://mycdn.com/${v}/myplugin.min.js' // a minified, production version
+     }
+     
+ },
+ 
+ // ...   
+    
+}
+```   
+
+I like to keep them alphabetical, and versions in order, just so that the client doesn't have to do it at runtime. Please keep this in mind when submitting pull requests.
+
+Issues
+------
+There will be bugs. Please submit them on the [official tracker](https://github.com/azoff/bpm/issues)
+
+License
+-------
+Licensed under [WTFPL](http://sam.zoy.org/wtfpl/), do with it as you please. It was created by @azoff, one quiet night in February.

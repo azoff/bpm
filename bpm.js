@@ -141,10 +141,28 @@
             }
             return url;
         },
-        
+                
         load: function() {
             var args = arrays.slice.call(arguments);
             yepnope.apply(global, args);
+        },
+        
+        list: function() {
+            bpm.utils.info(bpm._db.keys.join(', '));
+            return bpm._db.keys;
+        },
+        
+        manifest: function() {
+            var urls = [];
+            bpm.utils.each(bpm._manifest, function(version, key){
+                var url = bpm.url(key, version); urls.push(url);
+                bpm.utils.info('${key}@${version} :: ${url}', { 
+                    key: key,
+                    version: version,
+                    url: url;
+                });
+            });
+            return urls;
         },
         
         latest: function(key) {
