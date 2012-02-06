@@ -159,7 +159,7 @@
                 bpm.utils.info('${key}@${version} :: ${url}', { 
                     key: key,
                     version: version,
-                    url: url;
+                    url: url
                 });
             });
             return urls;
