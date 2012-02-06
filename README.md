@@ -136,6 +136,18 @@ The package repository is simply a JavaScript file that is loaded via JSONP onto
 
 I like to keep them alphabetical, and versions in order, just so that the client doesn't have to do it at runtime. Please keep this in mind when submitting pull requests.
 
+TODOs
+-----
+I still plan on doing a lot more to make _bpm_ awesome. Here are some of the things coming up:
+
+- Complete the documentation
+- Add tests for every library (so I can run them on import)
+- Create the actual minified version of the client
+- Get the entire Google CDN and cdnjs catalog in packages.js
+- Make a better looking home page
+- Get some press on this bad boy
+
+
 Issues
 ------
 There will be bugs. Please submit them on the [official tracker](https://github.com/azoff/bpm/issues)

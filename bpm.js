@@ -25,7 +25,7 @@
             definitions: {}
         },
 
-        repository: '../packages.js',
+        repository: 'http://azoff.github.com/bpm/packages.js',
 
         mode: 'dev',
 
