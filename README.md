@@ -142,7 +142,8 @@ I still plan on doing a lot more to make _bpm_ awesome. Here are some of the thi
 
 - Complete the documentation
 - Add tests for every library (so I can run them on import)
-- Create the actual minified version of the client
+- Create minified versions of the client and repo
+- Add a simple make file to minify the repo and client
 - Get the entire Google CDN and cdnjs catalog in packages.js
 - Make a better looking home page
 - Get some press on this bad boy
