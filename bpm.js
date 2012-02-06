@@ -5,7 +5,7 @@
 // by
 // Jonathan Azoff - @azoff - jon[at]azoffdesign.com
 //
-// http://azoffdesign.com/bpm
+// http://azoff.github.com/bpm
 // https://github.com/azoff/bpm/
 //
 // Tri-license - WTFPL | MIT | BSD

@@ -1,3 +1,3 @@
 BPM - The Browser's Package Manager
 -----------------------------------
-Node has npm, python has easy_install, ruby has gems, and the browser has...? The answer is that the browser has nothing, nothing more than a couple high powered CDNs governed by 800 pound gorillas and arbitrary barriers to entry. No longer we say, no longer shall the browser be held to such a diminutive standard - for now we have BPM - The Browser's Package Manager! Take one part simple JSON repository, one part JS script-loader, and you get an easy to use package manager for the browser. Want to add your library? No more barriers to entry, just submit a pull request to `packages.jsonp`! Haven't scared you away yet? Read on for usage instructions.
+TODO
