@@ -139,10 +139,10 @@
         url: function(key, version) {
             var def = bpm.lookup(key), url = '';
             if (def && def.cdn) {
-                if (bpm.mode in def.cdn) {
-                    url = bpm.utils.format(def.cdn[bpm.mode], { v: version });
-                } else if (objects.toString.call(def.cdn) === '[object String]') {
+                if (objects.toString.call(def.cdn) === '[object String]') {
                     url = bpm.utils.format(def.cdn, { v: version });
+                } else if (bpm.mode in def.cdn) {
+                    url = bpm.utils.format(def.cdn[bpm.mode], { v: version });
                 }
             }
             return url;

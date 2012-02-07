@@ -147,13 +147,13 @@ TODOs
 -----
 I still plan on doing a lot more to make _bpm_ awesome. Here are some of the things coming up:
 
+- Get the MSFT CDN and CDNJS catalog in packages.js
 - Add an uninstall method (this might not be worth it...)
 - Add documentation for utils and flags
 - Add tests for auxiliary and prototyping functions
 - Create minified versions of the client and repo
 - Deploy the minified versions
 - Add a simple make file to minify the repo and client
-- Get the entire Google CDN and cdnjs catalog in packages.js
 - Make a better looking home page
 - Get some press on this bad boy
 
