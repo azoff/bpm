@@ -148,10 +148,10 @@ TODOs
 I still plan on doing a lot more to make _bpm_ awesome. Here are some of the things coming up:
 
 - Get the MSFT CDN and CDNJS catalog in packages.js
-- Add an uninstall method (this might not be worth it...)
 - Add documentation for utils and flags
 - Add tests for auxiliary and prototyping functions
 - Make a better looking home page
+- Add a custom domain for the home page
 - Get some press on this bad boy
 
 
