@@ -2,13 +2,13 @@ var global = this;
 
 $(document).ready(function(){
     
-    module("Initialization");
+    module("bpm.ready");
     
-    test("Load BPM", 1, function() {
+    test("load bpm", 1, function() {
         ok(('bpm' in global), 'bpm found on global object');
     });
     
-    asyncTest("Load package definitions", 2, function() {
+    asyncTest("load package definitions", 2, function() {
         ok(('ready' in bpm), 'bpm.ready found');
         bpm.ready(function(){
             ok(bpm._db.count > 0, 'package definitions loaded');
@@ -16,17 +16,55 @@ $(document).ready(function(){
         });
     });
     
-    module("Installing");
+    module("bpm.utils");
     
-    test('Ensure install method exists', 1, function(){
+    test('ensure utils object exists', 1, function(){
+        ok(('utils' in bpm), 'bpm.utils found');
+    });
+    
+    test('ensure utils.each works', 2, function(){
+        ok(('each' in bpm.utils), 'bpm.utils.each found');
+        var sum = 0;
+        bpm.utils.each([1,1,1], function(value){
+            sum+=value;
+        });
+        equal(3, sum, 'each loop worked');
+    });
+    
+    module("bpm.install");
+    
+    test('ensure install method exists', 1, function(){
         ok(('install' in bpm), 'bpm.install found');
     });
     
-    asyncTest("Load single library as string", 1, function(){
+    asyncTest("load single library as string", 1, function(){
         bpm.install('dojo', function(){
-            ok(!!this.dojo, 'dojo exists on window object');
+            ok(!!global.dojo, 'dojo exists on window object');
             start();
         });
     });
+    
+    asyncTest("load single library with dependency", 3, function(){
+        ok(delete global.jQuery, 'deleted existing jQuery');
+        bpm.install('jqueryui', function(){
+            ok(!!global.jQuery, 'jQuery exists on window object');
+            ok(!!global.jQuery.ui, 'jQuery.ui exists on window object');
+            start();
+        });
+    });
+    
+    module('package');
+    
+    bpm.ready(function(){
+        bpm.utils.each(bpm._db.keys, function(key){
+            asyncTest(key, 1, function(){
+                bpm.install(key, function(){
+                    ok(true, 'passed!');
+                    start();
+                });
+            });
+        });
+    });
+    
 
 });

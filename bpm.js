@@ -9,7 +9,7 @@
 // https://github.com/azoff/bpm/
 //
 // Tri-license - WTFPL | MIT | BSD
- (function(global, logger) {
+(function(global, logger) {
 
     var 
     arrays = Array.prototype,
@@ -61,7 +61,10 @@
         },
 
         install: function(request, onsuccess) {
-            var urls = [], adder, success = true;            
+            var urls = [], adder, success = true, complete = function(){
+                bpm.utils.info('Script(s) successfully loaded, installation complete!');
+                if (onsuccess && onsuccess.call) { onsuccess(); }
+            };            
             bpm.ready(function(){                
                 bpm.utils.info('Processing install request...');
                 bpm.utils.each(bpm.utils.ensureArray(request), adder = function(request){
@@ -101,8 +104,8 @@
                                 } else {
                                     return (success = bpm.utils.error('Found definition for "${key}", but could not find CDN URL for "${mode}" mode. Available modes: ${modes}', {
                                         key: response.key,
-                                        version: bpm.mode,
-                                        versions: bpm
+                                        mode: bpm.mode,
+                                        modes: bpm.utils.keys(bpm.lookup(response.key).cdn).join(', ')
                                     }));
                                 }
                             }
@@ -121,23 +124,26 @@
                     }                    
                 });                
                 // finally load the URLs if we didn't have an error
-                if (success && urls.length) {
-                    bpm.utils.info('Manifest created! Loading ${count} new script(s)...', { count: urls.length });
-                    bpm.load({
-                        load: urls,
-                        complete: function(){
-                            bpm.utils.info('Script(s) successfully loaded, installation complete!');
-                            if (onsuccess && onsuccess.call) { onsuccess(); }
-                        }
-                    });
+                if (success) {
+                    if (urls.length) {
+                        bpm.utils.info('Manifest created! Loading ${count} new script(s)...', { count: urls.length });
+                        bpm.load({ load: urls, complete: complete });
+                    } else {
+                        bpm.utils.info('No new scripts to add...');
+                        complete();
+                    }
                 }
             });
         },
         
         url: function(key, version) {
             var def = bpm.lookup(key), url = '';
-            if (def && def.cdn && (bpm.mode in def.cdn)) {
-                url = bpm.utils.format(def.cdn[bpm.mode], { v: version });
+            if (def && def.cdn) {
+                if (bpm.mode in def.cdn) {
+                    url = bpm.utils.format(def.cdn[bpm.mode], { v: version });
+                } else if (objects.toString.call(def.cdn) === '[object String]') {
+                    url = bpm.utils.format(def.cdn, { v: version });
+                }
             }
             return url;
         },
@@ -167,7 +173,7 @@
         
         latest: function(key) {
             var versions = bpm.versions(key), len = versions.length;
-            return len > 0 ? versions[len-1] : false;
+            return len > 0 ? versions[len-1] : '';
         },
         
         versions: function(key) {
@@ -190,7 +196,9 @@
             response.keyMatch = !!bpm.lookup(response.key);
             if (response.keyMatch) {
                 versions = bpm.versions(response.key);
-                if (response.version === 'latest') {
+                if (versions.length === 0) {
+                    response.versionMatch = response.version === 'latest';
+                } else if (response.version === 'latest') {
                     response.version = versions[versions.length-1];
                     response.versionMatch = true;
                 } else {

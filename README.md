@@ -4,9 +4,9 @@ _bpm_ is a very early attempt at bringing some notion of package management to t
 
 Rationale
 ---------
-"Why another package manager" you may ask? Well, for starters, every mature runtime seems to have one except for browser-based JavaScript. Now, before you get your panties in a knot: I have not been living under a rock, I am fully aware of Isaac's [npm](http://npmjs.org/) and all of it's JS packaging glory. However, I am of the opinion that npm, as it stands, is not a good solution for sharing browser-targeted JavaScript with developers. For starters, it relies on [NodeJS](http://nodejs.org/) which, for how awesome it is, should not be a prerequisite for importing JavaScript into the browser. The browser already has a JavaScript runtime, why install another just to import packages? In addition, the current npm ecosystem does not make any guarantees that the imported packages will even work outside of Node's V8 runtime! npm's packaging metaphor is key to its versatility, but its generality and lack of scoping really only makes it ideal for use in the node ecosystem.
+"Why another package manager" you may ask? Well, for starters, every mature runtime seems to have one except for browser-based JavaScript. Now, before you get your panties in a knot: I have not been living under a rock, I am fully aware of Isaac's [npm](http://npmjs.org/) and all of it's JS packaging glory. However, I am of the opinion that npm, as it stands, is not a good solution for sharing browser-targeted JavaScript with developers. For starters, it relies on [NodeJS](http://nodejs.org/) which, for how awesome it is, should not be a prerequisite for importing JavaScript into the browser. The browser already has a JavaScript runtime, why install another just to import packages? In addition, the current npm system does not make any guarantees that the imported packages will even work outside of Node's V8 runtime! npm's packaging metaphor is key to its versatility, but its generality and lack of scoping really only makes it ideal for use in the node ecosystem.
 
-So the, what makes a "package" ideal for the browser? Well, while I can't speak for everyone, my experience is that "packages" in the browser are really just compiled JavaScript libraries. Some libraries can have dependencies, while others just need basic browser APIs, Also, depending on my development environment, these libraries tend to either be minified or completely uncompressed. So, at the very least, it seems like a browser-based package manager would have to be able to support these metaphors, and do so in a way that actually improves prototyping workflow. At first thought, something like the [Google Libraries API](http://code.google.com/apis/libraries/devguide.html) already provides this functionality. Unfortunately, the walled garden of google's CDN and the lack of obvious dependency management limited its potential. To work around Google's restrictions, some folks decided to forgo dealing with google's CDN and host their libraries on a more open CDNs like [cdnjs.com](http://www.cdnjs.com/) (I am sure there are others). While these "open" CDNs succeeded in allowing distribution of less ubiquitous libraries, they were never created with the intent of serving packages like the aforementioned Google libraries did.
+So then, what makes a "package" ideal for the browser? Well, while I can't speak for everyone, my experience is that "packages" in the browser are really just compiled JavaScript libraries. Some libraries can have dependencies, while others just need basic browser APIs, Also, depending on my development environment, these libraries tend to either be minified or completely uncompressed. So, at the very least, it seems like a browser-based package manager would have to be able to support these metaphors, and do so in a way that actually improves prototyping workflow. At first thought, something like the [Google Libraries API](http://code.google.com/apis/libraries/devguide.html) seems to solve this nicely. Unfortunately, the walled garden of google's CDN and the lack of obvious dependency management limited its potential. To work around Google's restrictions, some folks decided to forgo dealing with google's CDN and host their libraries on a more "open" CDNs like [cdnjs.com](http://www.cdnjs.com/) (I am sure there are others). While these "open" CDNs succeeded in allowing distribution of less ubiquitous libraries, they were never created with the intent of serving packages like the aforementioned Google libraries did.
 
 _bpm_ is, essentially, an attempt to cover these basic use cases, and improve upon them with tools to expedite prototyping.
 
@@ -18,7 +18,7 @@ _bpm_ aims to be *the* package manager for the browser. To accomplish this, it w
 - The package repository is open; additions to the repository are made via pull-request
 - Installing a package results in the downloading of a single script. Depending on bpm's "mode" this can be a minified or uncompressed version.
 - Packages are to be installed as efficiently as possible, making heavy use of caching where possible.
-- Packages can have optional prerequisites; they are defined in the same syntax a user would use to install packages.
+- Packages can define optional prerequisites; they are defined in the same syntax a user would use to install packages.
 - The package manager API can be run interactively, through the JavaScript console; or statically as an included script.
 - The package manager can display information about what scripts were loaded, and provide tools to re-import the included scripts without the package manager.
 
@@ -49,7 +49,7 @@ bpm.install('jquery', function(){
 });
 ```
 
-_bpm_ goes above and beyond to be as useful as possible, in some cases correcting user-error by suggesting possible misspelling in package names or incorrect version numbers. You can play around with this functionality by using the `suggest` method, or you may even use the `list` method to quickly view the entire package catalog.
+_bpm_ goes above and beyond to be as useful as possible, in some cases correcting user-error by suggesting possible misspelling in package names or incorrect version numbers. You can play around with this functionality by using the `suggest` method, or you may even use the `list` method to quickly view the entire package catalog. Once you are done prototyping, the `manifest` method will help you quickly see the scripts you used.
 
 ```javascript
 bpm.suggest('jqury'); // returns "jquery"
@@ -118,10 +118,17 @@ The package repository is simply a JavaScript file that is loaded via JSONP onto
  
  myplugin: {
      
-     requires: ['anotherplugin', { key: 'jquery', version: '1.7.0' }], // an *optional* list of requirements
+     // an optional list of requirements, this should be a 
+     // request object, like the one passed into bpm.install
+     requires: ['anotherplugin', { key: 'jquery', version: '1.7.0' }],
      
-     versions: ['1.0.0', '1.1.0', '1.1.2b'], // a required list of version numbers supported by your CDN
+     // an optional list of versions supported by your CDN
+     // if you do not provide this, ${v} will not be replaced in
+     // the CDN links
+     versions: ['1.0.0', '1.1.0', '1.1.2b'],
      
+     // you can also just use one link, if you do not differentiate your modes
+     // cdn: 'https://mycdn.com/${v}/myplugin.js'
      cdn: {
          dev:  'https://mycdn.com/${v}/myplugin.js',    // a development version
          prod: 'https://mycdn.com/${v}/myplugin.min.js' // a minified, production version
@@ -134,15 +141,17 @@ The package repository is simply a JavaScript file that is loaded via JSONP onto
 }
 ```   
 
-I like to keep them alphabetical, and versions in order, just so that the client doesn't have to do it at runtime. Please keep this in mind when submitting pull requests.
+I like to keep the packages alphabetical, and versions in order, so that the client doesn't have to sort at runtime. Please keep this in mind when submitting pull requests.
 
 TODOs
 -----
 I still plan on doing a lot more to make _bpm_ awesome. Here are some of the things coming up:
 
-- Complete the documentation
-- Add tests for every library (so I can run them on import)
+- Add an uninstall method (this might not be worth it...)
+- Add documentation for utils and flags
+- Add tests for auxiliary and prototyping functions
 - Create minified versions of the client and repo
+- Deploy the minified versions
 - Add a simple make file to minify the repo and client
 - Get the entire Google CDN and cdnjs catalog in packages.js
 - Make a better looking home page
@@ -155,4 +164,4 @@ There will be bugs. Please submit them on the [official tracker](https://github.
 
 License
 -------
-Licensed under [WTFPL](http://sam.zoy.org/wtfpl/), do with it as you please. It was created by @azoff, one quiet night in February.
+Licensed under [WTFPL](http://sam.zoy.org/wtfpl/), do with it as you please. If you like the idea, please fork or contribute. Even adding a test, or submitting a library can go a long way.
