@@ -12,24 +12,30 @@ bpm.init({
         ],
         
         cdn: {
-            dev: 'https://ajax.googleapis.com/ajax/libs/dojo/${v}/dojo/dojo.xd.js.uncompressed.js',
-            prod: 'https://ajax.googleapis.com/ajax/libs/dojo/${v}/dojo/dojo.xd.js'            
+            dev: '//ajax.googleapis.com/ajax/libs/dojo/${v}/dojo/dojo.xd.js.uncompressed.js',
+            prod: '//ajax.googleapis.com/ajax/libs/dojo/${v}/dojo/dojo.xd.js'            
         }
         
     },
-    
-    ext: {
         
+    ext: {
+    
         versions: [
             '3.0.0', 
             '3.1.0'
         ],
-        
+    
         cdn: {
-            dev: 'https://ajax.googleapis.com/ajax/libs/ext-core/${v}/ext-core.js',
-            prod: 'https://ajax.googleapis.com/ajax/libs/ext-core/${v}/ext-core-debug.js'
+            dev: '//ajax.googleapis.com/ajax/libs/ext-core/${v}/ext-core.js',
+            prod: '//ajax.googleapis.com/ajax/libs/ext-core/${v}/ext-core-debug.js'
         }
-        
+    
+    },
+
+    facebook: {
+    
+        cdn: '//connect.facebook.net/en_US/all.js'
+    
     },
         
     jquery: {
@@ -44,8 +50,8 @@ bpm.init({
         ],
         
         cdn: {
-            dev: 'https://ajax.googleapis.com/ajax/libs/jquery/${v}/jquery.js',
-            prod: 'https://ajax.googleapis.com/ajax/libs/jquery/${v}/jquery.min.js'
+            dev: '//ajax.googleapis.com/ajax/libs/jquery/${v}/jquery.js',
+            prod: '//ajax.googleapis.com/ajax/libs/jquery/${v}/jquery.min.js'
         }
         
     },
@@ -62,10 +68,64 @@ bpm.init({
         ],
         
         cdn: {
-            dev: 'https://ajax.googleapis.com/ajax/libs/jqueryui/${v}/jquery-ui.js',
-            prod: 'https://ajax.googleapis.com/ajax/libs/jqueryui/${v}/jquery-ui.min.js'
+            dev: '//ajax.googleapis.com/ajax/libs/jqueryui/${v}/jquery-ui.js',
+            prod: '//ajax.googleapis.com/ajax/libs/jqueryui/${v}/jquery-ui.min.js'
         }
         
+    },
+    
+    mootools: {
+        
+        versions: [
+            '1.1.1', '1.1.2', 
+            '1.2.1', '1.2.2', '1.2.3', '1.2.4', '1.2.5', 
+            '1.3.0', '1.3.1', '1.3.2', 
+            '1.4.0', '1.4.1'
+        ],
+        
+        cdn: {
+            dev: '//ajax.googleapis.com/ajax/libs/mootools/${v}/mootools-yui-compressed.js',
+            prod: '//ajax.googleapis.com/ajax/libs/mootools/${v}/mootools.js'
+        }
+        
+    },
+
+    'prototype': {
+
+        versions: [
+            '1.6.0.2', '1.6.0.3', '1.6.1.0',
+            '1.7.0.0'
+        ],
+
+        cdn: '//ajax.googleapis.com/ajax/libs/prototype/${v}/prototype.js'
+
+    },
+
+    scriptaculous: {
+
+        requires: ['prototype'],
+
+        versions: [
+            '1.8.1', '1.8.2', '1.8.3',
+            '1.9.0'
+        ],
+
+        cdn: '//ajax.googleapis.com/ajax/libs/scriptaculous/${v}/scriptaculous.js'
+
+    },
+
+    swfobject: {
+
+        versions: [
+            '2.1',
+            '2.2'
+        ],
+
+        cdn: {
+            dev: '//ajax.googleapis.com/ajax/libs/swfobject/${v}/swfobject_src.js',
+            prod: '//ajax.googleapis.com/ajax/libs/swfobject/${v}/swfobject.js'
+        }
+
     }
     
 });
