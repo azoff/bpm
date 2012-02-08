@@ -75,7 +75,7 @@
                         // check if version exists
                         if (response.versionMatch) {
                             // add all prerequisites
-                            bpm.utils.each(bpm.requires(response.key), adder);
+                            bpm.utils.each(bpm.utils.ensureArray(bpm.requires(response.key)), adder);
                             // error out if the prerequisites failed
                             if (!success) { return false; }
                             // check to see if we already added the script
