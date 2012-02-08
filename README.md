@@ -4,9 +4,9 @@ _bpm_ is a very early attempt at bringing some notion of package management to t
 
 Rationale
 ---------
-"Why another package manager" you may ask? Well, for starters, every mature runtime seems to have one except for browser-based JavaScript. Now, before you get your panties in a knot: I have not been living under a rock, I am fully aware of Isaac's [npm](http://npmjs.org/) and all of it's JS packaging glory. However, I am of the opinion that npm, as it stands, is not a good solution for sharing browser-targeted JavaScript with developers. For starters, it relies on [NodeJS](http://nodejs.org/) which, for how awesome it is, should not be a prerequisite for importing JavaScript into the browser. The browser already has a JavaScript runtime, why install another just to import packages? In addition, the current npm system does not make any guarantees that the imported packages will even work outside of Node's V8 runtime! npm's packaging metaphor is key to its versatility, but its generality and lack of scoping really only makes it ideal for use in the node ecosystem.
+"Why another package manager" you may ask? Well, for starters, every mature runtime seems to have one except for browser-based JavaScript. Now, before you get your panties in a knot: I have not been living under a rock, I am fully aware of Isaac's [npm](http://npmjs.org/) and all of it's JS packaging glory. However, I am of the opinion that npm, as it stands, is not a good solution for sharing browser-targeted JavaScript with developers. For starters, it relies on [NodeJS](http://nodejs.org/) which, for how awesome it is, should not be a prerequisite for importing JavaScript into the browser. The browser already has a JavaScript runtime, why install another just to import packages? In addition, the current npm system does not make any guarantees that the imported packages will even work outside of Node's V8 runtime! npm's packaging metaphor is key to its versatility, but its generality and lack of scoping take away from its utility outside the node ecosystem.
 
-So then, what makes a "package" ideal for the browser? Well, while I can't speak for everyone, my experience is that "packages" in the browser are really just compiled JavaScript libraries. Some libraries can have dependencies, while others just need basic browser APIs, Also, depending on my development environment, these libraries tend to either be minified or completely uncompressed. So, at the very least, it seems like a browser-based package manager would have to be able to support these metaphors, and do so in a way that actually improves prototyping workflow. At first thought, something like the [Google Libraries API](http://code.google.com/apis/libraries/devguide.html) seems to solve this nicely. Unfortunately, the walled garden of google's CDN and the lack of obvious dependency management limited its potential. To work around Google's restrictions, some folks decided to forgo dealing with google's CDN and host their libraries on a more "open" CDNs like [cdnjs.com](http://www.cdnjs.com/) (I am sure there are others). While these "open" CDNs succeeded in allowing distribution of less ubiquitous libraries, they were never created with the intent of serving packages like the aforementioned Google libraries did.
+So then, what makes a "package" ideal for the browser? Well, while I can't speak for everyone, my experience is that "packages" in the browser are really just compiled JavaScript libraries. Some libraries can have dependencies, while others just depend on basic browser APIs. Also, depending on my development environment, these libraries tend to either be minified or completely uncompressed. So, at the very least, it seems like a browser-centric package manager would have to be able to support these metaphors, and do so in a way that actually improves prototyping workflow. At first thought, something like the [Google Libraries API](http://code.google.com/apis/libraries/devguide.html) seems to solve this nicely. Unfortunately, the walled garden of google's CDN and the lack of obvious dependency management limited its potential. To work around Google's restrictions, some folks decided to forgo dealing with google's CDN and host their libraries on a more "open" CDNs like [cdnjs.com](http://www.cdnjs.com/) (I am sure there are others). While these "open" CDNs succeeded in allowing distribution of less ubiquitous libraries, they were never created with the intent of serving packages like the aforementioned Google libraries did.
 
 _bpm_ is, essentially, an attempt to cover these basic use cases, and improve upon them with tools to expedite prototyping.
 
@@ -147,11 +147,12 @@ TODOs
 -----
 I still plan on doing a lot more to make _bpm_ awesome. Here are some of the things coming up:
 
-- Get the MSFT CDN and CDNJS catalog in packages.js
+- Implement and document a help function
+- Make a better looking home page (isotope + jsconsole)
 - Add documentation for utils and flags
 - Add tests for auxiliary and prototyping functions
-- Make a better looking home page
 - Add a custom domain for the home page
+- Link to this plug-in from azoffdesign.com
 - Get some press on this bad boy
 
 
