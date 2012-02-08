@@ -2,6 +2,8 @@ bpm.init({
     
     backbone: {
         
+        requires: 'underscore',
+        
         versions: ['0.9.0'],
         
         cdn: '//cdnjs.cloudflare.com/ajax/libs/backbone.js/${v}/backbone-min.js'
