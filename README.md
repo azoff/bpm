@@ -158,7 +158,7 @@ I still plan on doing a lot more to make _bpm_ awesome. Here are some of the thi
 
 Issues
 ------
-There will be bugs. Please submit them on the [official tracker](https://github.com/azoff/bpm/issues)
+There will be bugs. Please submit them on the [official tracker](https://github.com/azoff/bpm/issues).
 
 License
 -------
