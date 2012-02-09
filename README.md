@@ -85,6 +85,9 @@ The Package Manager API
    - Returns the CDN URL for a package given its version and package key
    - `key` `string` The unique package key
    - `version` `string` The unique package version
+
+- `bpm.usage` ( )
+   - Outputs a usage string for bpm. Basically exposes all callable methods on bpm.
    
 - `bpm.requires` ( `key` )
    - Outputs a list of requirements given a package key
@@ -99,8 +102,12 @@ The Package Manager API
    - `key` `string` The package to search for the versions of
    
 - `bpm.search` ( `request` )
-  - Takes a request object (like the one passed into `install`) and tries to find it.
+  - Takes a request object (like the one passed into `install`) and returns an object that exposes request matches.
   - `request` `object|string` The request object to use in search
+  
+- `bpm.lookup` ( `key` )
+  - Takes a key and returns its definition
+  - `key` `string` The key to look up
   
 - `bpm.define` ( `key`, `definition` )
   - Adds a package to the current bpm session
