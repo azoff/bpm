@@ -28,6 +28,8 @@
         repository: 'http://azoff.github.com/bpm/packages.js',
 
         mode: 'dev',
+        
+        logger: logger,
 
         logging: true,
 
@@ -153,20 +155,29 @@
             yepnope.apply(global, args);
         },
         
+        usage: function() {
+            var keys = bpm.utils.keys(bpm);
+            bpm.utils.each(keys, function(key){
+                var prop = bpm[key], args;
+                if (key !== 'utils' && key.charAt(0) !== '_') {
+                    if (prop.call) {
+                        args = bpm[key].toString().split('(')[1].split(')')[0];
+                        bpm.utils.info('function: bpm.${name}(${args})', { name: key, args: args });
+                    } else {
+                        bpm.utils.info('property: bpm.${name} = ${value}', { name: key, value: bpm[key] });
+                    }
+                }
+            });
+        },
+        
         list: function() {
-            bpm.utils.info(bpm._db.keys.join(', '));
             return bpm._db.keys;
         },
         
         manifest: function() {
             var urls = [];
             bpm.utils.each(bpm._manifest, function(version, key){
-                var url = bpm.url(key, version); urls.push(url);
-                bpm.utils.info('${key}@${version} :: ${url}', { 
-                    key: key,
-                    version: version,
-                    url: url
-                });
+                urls.push(bpm.url(key, version));
             });
             return urls;
         },
@@ -268,14 +279,14 @@
             },
 
             info: function(template, model) {
-                if (logger && bpm.logging) {
-                    logger.info(bpm.utils.format(template, model));
+                if (bpm.logger && bpm.logging) {
+                    bpm.logger.info(bpm.utils.format(template, model));
                 }
             },
 
             error: function(template, model) {
-                if (logger && bpm.logging) {
-                    logger.error(bpm.utils.format(template, model));
+                if (bpm.logger && bpm.logging) {
+                    bpm.logger.error(bpm.utils.format(template, model));
                 } return false;
             },
 
