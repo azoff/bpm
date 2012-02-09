@@ -28,6 +28,8 @@
         repository: 'http://azoff.github.com/bpm/packages.js',
 
         mode: 'dev',
+        
+        logger: logger,
 
         logging: true,
 
@@ -268,14 +270,14 @@
             },
 
             info: function(template, model) {
-                if (logger && bpm.logging) {
-                    logger.info(bpm.utils.format(template, model));
+                if (bpm.logger && bpm.logging) {
+                    bpm.logger.info(bpm.utils.format(template, model));
                 }
             },
 
             error: function(template, model) {
-                if (logger && bpm.logging) {
-                    logger.error(bpm.utils.format(template, model));
+                if (bpm.logger && bpm.logging) {
+                    bpm.logger.error(bpm.utils.format(template, model));
                 } return false;
             },
 
