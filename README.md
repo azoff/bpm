@@ -154,10 +154,9 @@ TODOs
 -----
 I still plan on doing a lot more to make _bpm_ awesome. Here are some of the things coming up:
 
-- Implement and document a help function
-- Make a better looking home page (isotope + jsconsole)
 - Add documentation for utils and flags
 - Add tests for auxiliary and prototyping functions
+- Tag beta release version
 - Add a custom domain for the home page
 - Link to this plug-in from azoffdesign.com
 - Get some press on this bad boy
