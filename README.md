@@ -175,7 +175,8 @@ I still plan on doing a lot more to make _bpm_ awesome. Here are some of the thi
 - Tag beta release version
 - Add a custom domain for the home page
 - Link to this plug-in from azoffdesign.com
-- Get some press on this bad boy
+- Browser testing (also make note in readme)
+- Release the hounds
 
 
 Issues
