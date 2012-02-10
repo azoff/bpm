@@ -169,6 +169,7 @@ TODOs
 -----
 I still plan on doing a lot more to make _bpm_ awesome. Here are some of the things coming up:
 
+- Stop the autofocus feature of jqconsole
 - Add credits and notable projects
 - Add documentation for utils and flags
 - Add tests for auxiliary and prototyping functions
