@@ -169,12 +169,14 @@ TODOs
 -----
 I still plan on doing a lot more to make _bpm_ awesome. Here are some of the things coming up:
 
+- Add credits and notable projects
 - Add documentation for utils and flags
 - Add tests for auxiliary and prototyping functions
 - Tag beta release version
 - Add a custom domain for the home page
 - Link to this plug-in from azoffdesign.com
-- Get some press on this bad boy
+- Browser testing (also make note in readme)
+- Release the hounds
 
 
 Issues
