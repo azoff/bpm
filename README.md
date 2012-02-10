@@ -169,6 +169,9 @@ TODOs
 -----
 I still plan on doing a lot more to make _bpm_ awesome. Here are some of the things coming up:
 
+- Cache packages.json in local storage
+- Investigate reading loaded script source
+- Investigate combining scripts into base64 encoded blobs
 - Hide cursor on blur
 - Stop the autofocus feature of jqconsole
 - Add credits and notable projects
@@ -177,6 +180,7 @@ I still plan on doing a lot more to make _bpm_ awesome. Here are some of the thi
 - Tag beta release version
 - Add a custom domain for the home page
 - Link to this plug-in from azoffdesign.com
+- Investigate the heroku addon option
 - Browser testing (also make note in readme)
 - Release the hounds
 
