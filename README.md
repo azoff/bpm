@@ -62,7 +62,20 @@ The Package Manager API
 - `bpm.install` ( `request`, `onsuccess` )
    - Installs one or more packages from the repository.
    - `request` `array|string|object` The request object is a message of intent to the installer. It can be a string name of a package to load, and object with a `key` and and optional `version` property, or an array of any either two. Note that you may omit the `version` property in the object to implicitly request the latest version of the library. Using the string form, or explicitly requesting 'latest' as the version has the same effect.
-   - `onsuccess` `function` A function to be called when the request is fully processed.
+   - `onsuccess` `function(matches,urls)` A listener that is called when the package is installed. The listener takes two parameters: a list of match objects (output of bpm.match) and the final URLs for the downloaded packages. If no packages are installed, these parameters will be empty.
+   - `onerror` `function(error,match)` A listener that is called when the package install is aborted. The listener takes two parameters: a simple error string and the match object that triggered the error. If there are no packages to install (i.e. if they have already been loaded), the onerror function will be called with the error parameter set to 'noop' and the match will be null;   
+
+- `bpm.installed` ( `key` )
+   - Checks if a package is installed by key.
+   - `key` `string` The key to search packages with
+
+- `bpm.addListener` ( `listener` )
+   - Adds a global onsuccess callback for all package installs.
+   - `listener` `function(matches,urls)` A listener that is called when the package is installed. The listener takes two parameters: a list of match objects (output of bpm.match) and the final URLs for the downloaded packages
+ 
+- `bpm.removeListener` ( `listener` )
+   - Removes a global onsuccess callback from all package installs.
+   - `listener` `function(matches,urls)` A listener that was previously bound using bpm.addListener
  
 - `bpm.suggest` ( `key` )
    - Uses a [levenshtein distance](http://en.wikipedia.org/wiki/Levenshtein_distance) calculation to determine the closest match to a package search term
@@ -76,7 +89,7 @@ The Package Manager API
    
 - `bpm.ready` ( `onready` )
    - Insulates any code from running until all the package definitions are ready
-   - `onready` `function` A function that is called when _bpm_ is ready to install packages
+   - `onready` `function` A function that is called when _bpm_'s internal database is fully initialized
    
 - `bpm.load` ( `request` )
    - An alias for `window.yepnope`, a script loader used internally by _bpm_. See the [official site](http://yepnopejs.com/) for usage.
@@ -101,7 +114,7 @@ The Package Manager API
    - Outputs the versions for a given package
    - `key` `string` The package to search for the versions of
    
-- `bpm.search` ( `request` )
+- `bpm.match` ( `request` )
   - Takes a request object (like the one passed into `install`) and returns an object that exposes request matches.
   - `request` `object|string` The request object to use in search
   
@@ -154,10 +167,9 @@ TODOs
 -----
 I still plan on doing a lot more to make _bpm_ awesome. Here are some of the things coming up:
 
-- Implement and document a help function
-- Make a better looking home page (isotope + jsconsole)
 - Add documentation for utils and flags
 - Add tests for auxiliary and prototyping functions
+- Tag beta release version
 - Add a custom domain for the home page
 - Link to this plug-in from azoffdesign.com
 - Get some press on this bad boy

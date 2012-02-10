@@ -9,15 +9,17 @@
 // https://github.com/azoff/bpm/
 //
 // Tri-license - WTFPL | MIT | BSD
-(function(global, logger) {
+(function(global, logger, undef) {
 
-    var 
+    var utils,
     arrays = Array.prototype,
     objects = Object.prototype,
     
     bpm = global.bpm = {
 
         _manifest: {},
+        
+        _listeners: [],
 
         _db: {
             count: 0,
@@ -36,17 +38,17 @@
         init: function(definitions) {
             if (!bpm.initialized) {
                 if (definitions) {
-                    bpm.utils.info('Definitions received, parsing...');
-                    bpm.utils.each(definitions, function(definition, key){
+                    utils.info('Definitions received, parsing...');
+                    utils.each(definitions, function(definition, key){
                         bpm.define(key, definition);
                     });
-                    bpm.utils.info('Parsing complete, ${count} definitions loaded.', { count: bpm._db.count });
+                    utils.info('Parsing complete, ${count} definitions loaded.', { count: bpm._db.count });
                     bpm.initialized = true;
                     if (bpm.ready.list) {
-                        bpm.utils.each(bpm.ready.list, function(callback){ callback(bpm); });
+                        utils.each(bpm.ready.list, function(callback){ callback(bpm); });
                     }
                 } else {
-                    bpm.utils.info('Starting BPM, loading definitions from ${repo}...', { repo: bpm.repository });
+                    utils.info('Starting BPM, loading definitions from ${repo}...', { repo: bpm.repository });
                     bpm.load(bpm.repository);
                 }
             }
@@ -61,65 +63,74 @@
                 bpm.ready.list = [callback];
             }
         },
+        
+        installed: function(key) {
+            return utils.isString(key) && (key in bpm._manifest);
+        },
 
-        install: function(request, onsuccess) {
-            var urls = [], adder, success = true, complete = function(){
-                bpm.utils.info('Script(s) successfully loaded, installation complete!');
-                if (onsuccess && onsuccess.call) { onsuccess(); }
-            };            
+        install: function(request, onsuccess, onerror) {
+            var urls = [], responses = [], adder, success = true;
+            onerror = utils.isFunction(onerror) ? onerror : function(){};
             bpm.ready(function(){                
-                bpm.utils.info('Processing install request...');
-                bpm.utils.each(bpm.utils.ensureArray(request), adder = function(request){
-                    var response = bpm.search(request), url;
-                    bpm.utils.info('Creating manifest entry for "${key}" @ "${version}"...', response);
+                utils.info('Processing install request...');
+                utils.each(utils.ensureArray(request), adder = function(request){
+                    var response = bpm.match(request), url;
+                    utils.info('Creating manifest entry for "${key}" @ "${version}"...', response);
                     // check if package exists
                     if (response.keyMatch) {
                         // check if version exists
                         if (response.versionMatch) {
                             // add all prerequisites
-                            bpm.utils.each(bpm.utils.ensureArray(bpm.requires(response.key)), adder);
+                            utils.each(utils.ensureArray(bpm.requires(response.key)), adder);
                             // error out if the prerequisites failed
-                            if (!success) { return false; }
+                            if (!success) { 
+                                onerror('requires', response);
+                                return false; 
+                            }
                             // check to see if we already added the script
                             if (response.key in bpm._manifest) {
                                 // but error out if we did, and the versions don't match
                                 if (bpm._manifest[response.key] !== response.version) {
-                                    bpm.utils.error('WARNING: detected request for version "${version}" of "${key}" which conflicts with previously requested version "${previous}"! Ignoring request...', {
+                                    utils.error('WARNING: detected request for version "${version}" of "${key}" which conflicts with previously requested version "${previous}"! Ignoring request...', {
                                         key: response.key,
                                         version: response.version,
                                         previous: bpm._manifest[response.key]
                                     });
                                 } else {
-                                    bpm.utils.info('"${key}" already in manifest, skipping...', response);
+                                    utils.info('"${key}" already in manifest, skipping...', response);
                                 }
                             // library not added yet, add to manifest and url list.
                             } else {
                                 url = bpm.url(response.key, response.version);
                                 // try to get the CDN URL, theorhetically this should never fail
                                 if (url) {
-                                    bpm.utils.info('Manifest entry for "${key}" created, using: ${url}', { 
+                                    utils.info('Manifest entry for "${key}" created, using: ${url}', { 
                                         key: response.key,
                                         url: url 
                                     });
                                     bpm._manifest[response.key] = response.version;
+                                    responses.push(response);
                                     urls.push(url);
                                 } else {
-                                    return (success = bpm.utils.error('Found definition for "${key}", but could not find CDN URL for "${mode}" mode. Available modes: ${modes}', {
+                                    onerror('cdn', response);
+                                    return (success = utils.error('Found definition for "${key}", but could not find CDN URL for "${mode}" mode. Available modes: ${modes}', {
                                         key: response.key,
                                         mode: bpm.mode,
-                                        modes: bpm.utils.keys(bpm.lookup(response.key).cdn).join(', ')
+                                        modes: utils.keys(bpm.lookup(response.key).cdn).join(', ')
                                     }));
                                 }
                             }
                         } else {
-                            return (success = bpm.utils.error('Found definition for "${key}", but could not find version "${version}". Available versions: ${versions}', {
+                            onerror('version', response);
+                            return (success = utils.error('Found definition for "${key}", but could not find version "${version}". Available versions: ${versions}', {
                                 key: response.key,
                                 version: response.version,
                                 versions: bpm.versions(response.key).join(', ')
                             }));
                         }
                     } else {
-                        return (success = bpm.utils.error('Unable to find definition for "${key}", did you mean "${suggestion}"?',{
+                        onerror('key', response);
+                        return (success = utils.error('Unable to find definition for "${key}", did you mean "${suggestion}"?',{
                             key: response.key,
                             suggestion: bpm.suggest(response.key)
                         }));
@@ -128,11 +139,19 @@
                 // finally load the URLs if we didn't have an error
                 if (success) {
                     if (urls.length) {
-                        bpm.utils.info('Manifest created! Loading ${count} new script(s)...', { count: urls.length });
-                        bpm.load({ load: urls, complete: complete });
+                        utils.info('Manifest created! Loading ${count} new script(s)...', { count: urls.length });
+                        bpm.load({ load: urls, complete: function() {
+                            utils.info('Script(s) successfully loaded, installation complete!');                                                    
+                            utils.each(bpm._listeners, function(listener) {
+                                listener(responses, urls);
+                            });
+                            if (utils.isFunction(onsuccess)) { 
+                                onsuccess(responses, urls);
+                            }
+                        }});
                     } else {
-                        bpm.utils.info('No new scripts to add...');
-                        complete();
+                        utils.info('No new scripts to add...');
+                        onerror('noop');
                     }
                 }
             });
@@ -141,13 +160,30 @@
         url: function(key, version) {
             var def = bpm.lookup(key), url = '';
             if (def && def.cdn) {
-                if (objects.toString.call(def.cdn) === '[object String]') {
-                    url = bpm.utils.format(def.cdn, { v: version });
+                if (utils.isString(def.cdn)) {
+                    url = utils.format(def.cdn, { v: version });
                 } else if (bpm.mode in def.cdn) {
-                    url = bpm.utils.format(def.cdn[bpm.mode], { v: version });
+                    url = utils.format(def.cdn[bpm.mode], { v: version });
                 }
             }
             return url;
+        },
+        
+        addListener: function(listener) {
+            var success = utils.isFunction(listener);
+            if (success) {
+                bpm._listeners.push(listener);
+            }
+            return success;
+        },
+        
+        removeListener: function(listener) {
+            var index = bpm._listeners.indexOf(listener),
+            success = index >= 0;
+            if (success) {
+                bpm._listeners.splice(index,1);
+            }
+            return success;
         },
                 
         load: function() {
@@ -156,15 +192,15 @@
         },
         
         usage: function() {
-            var keys = bpm.utils.keys(bpm);
-            bpm.utils.each(keys, function(key){
+            var keys = utils.keys(bpm);
+            utils.each(keys, function(key){
                 var prop = bpm[key], args;
                 if (key !== 'utils' && key.charAt(0) !== '_') {
                     if (prop.call) {
                         args = bpm[key].toString().split('(')[1].split(')')[0];
-                        bpm.utils.info('function: bpm.${name}(${args})', { name: key, args: args });
+                        utils.info('function: bpm.${name}(${args})', { name: key, args: args });
                     } else {
-                        bpm.utils.info('property: bpm.${name} = ${value}', { name: key, value: bpm[key] });
+                        utils.info('property: bpm.${name} = ${value}', { name: key, value: bpm[key] });
                     }
                 }
             });
@@ -176,7 +212,7 @@
         
         manifest: function() {
             var urls = [];
-            bpm.utils.each(bpm._manifest, function(version, key){
+            utils.each(bpm._manifest, function(version, key){
                 urls.push(bpm.url(key, version));
             });
             return urls;
@@ -197,7 +233,7 @@
             return (def && def.requires) ? def.requires : [];
         },
         
-        search: function(request) {
+        match: function(request) {
             var response = { 
                 keyMatch: false,
                 versionMatch: false,
@@ -242,10 +278,24 @@
             this._db.definitions[key] = definition;
         },
 
-        utils: {
+        utils: utils = {
+            
+            isString: function(obj) {
+                return objects.toString.call(obj) === '[object String]';
+            },
+                        
+            isArray: function(obj) {
+                return objects.toString.call(obj) === '[object Array]';
+            },
+            
+            isFunction: function(obj) {
+                return objects.toString.call(obj) === '[object Function]';
+            },
             
             ensureArray: function(obj) {
-                if (objects.toString.call(obj) === '[object Array]'){ 
+                if (obj === undef) {
+                    return [];
+                } else if (utils.isArray(obj)){ 
                     return obj; 
                 } else {
                     return [obj];
@@ -253,11 +303,8 @@
             },
             
             each: function(obj, iterator, context) {
-                var each = arrays.forEach;
                 if (obj === null) return;
-                if (each && obj.forEach === each) {
-                    obj.forEach(iterator, context);
-                } else if (obj.length === +obj.length) {
+                if (obj.length === +obj.length) {
                     for (var i = 0, l = obj.length; i < l; i++) {
                         if (i in obj && iterator.call(context, obj[i], i, obj) === false) return;
                     }
@@ -280,13 +327,13 @@
 
             info: function(template, model) {
                 if (bpm.logger && bpm.logging) {
-                    bpm.logger.info(bpm.utils.format(template, model));
+                    bpm.logger.info(utils.format(template, model));
                 }
             },
 
             error: function(template, model) {
                 if (bpm.logger && bpm.logging) {
-                    bpm.logger.error(bpm.utils.format(template, model));
+                    bpm.logger.error(utils.format(template, model));
                 } return false;
             },
 

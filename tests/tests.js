@@ -4,7 +4,7 @@ $(document).ready(function(){
     
     module("bpm.ready");
     
-    test("load bpm", 1, function() {
+    test("init", 1, function() {
         ok(('bpm' in global), 'bpm found on global object');
     });
     
@@ -16,11 +16,7 @@ $(document).ready(function(){
         });
     });
     
-    module("bpm.utils");
-    
-    test('ensure utils object exists', 1, function(){
-        ok(('utils' in bpm), 'bpm.utils found');
-    });
+    module("utils");
     
     test('ensure utils.each works', 2, function(){
         ok(('each' in bpm.utils), 'bpm.utils.each found');
@@ -31,35 +27,66 @@ $(document).ready(function(){
         equal(3, sum, 'each loop worked');
     });
     
-    module("bpm.install");
+    module("core");
     
-    test('ensure install method exists', 1, function(){
-        ok(('install' in bpm), 'bpm.install found');
+    asyncTest("load single library as string", 5, function(){
+        bpm.install('dojo', function(matches, urls){
+            equal(matches.length, 1, 'dojo package installed');
+            equal(urls.length, 1, 'dojo script installed');
+            equal(matches[0].version, bpm.latest(matches[0].key), 'expected version installed');
+            equal(urls[0], bpm.url(matches[0].key, matches[0].version), 'expected script installed');
+            ok(('dojo' in global), 'dojo exists on window object');
+            start();
+        });
     });
-    
-    asyncTest("load single library as string", 1, function(){
-        bpm.install('dojo', function(){
-            ok(!!global.dojo, 'dojo exists on window object');
+
+    asyncTest("load a bad library", 2, function(){
+        bpm.install(['jquery', 'camann', 'jqueryui'], null, function(error, match){
+            equals(error, 'key', 'failed on key match');
+            equals(match.key, 'camann', 'failed on the "camann" key');
+            start();
+        });
+    });
+
+    asyncTest("load two unrelated libraries", 1, function(){
+        bpm.install(['caman', 'cufon'], function(matches, urls){
+            equals(urls.length, 2, 'loaded both libraries');
             start();
         });
     });
     
-    asyncTest("load single library with dependency", 3, function(){
-        ok(delete global.jQuery, 'deleted existing jQuery');
-        bpm.install('jqueryui', function(){
-            ok(!!global.jQuery, 'jQuery exists on window object');
-            ok(!!global.jQuery.ui, 'jQuery.ui exists on window object');
+    asyncTest("load single library with dependency", 2, function(){
+        bpm.install('graphael', function(){
+            ok(('Raphael' in global), 'Raphael exists on window object');            
+            ok(('g' in global.Raphael.fn), 'Graphael exists on Raphael object');
             start();
         });
     });
     
-    module('package');
+    asyncTest("add and remove listeners", 2, function(){
+        var listener = function(matches, url){            
+            ok(bpm.installed(matches[0].key), 'prototype installed');
+        };
+        bpm.addListener(listener);
+        bpm.install('prototype', function(){
+            bpm.removeListener(listener);            
+            bpm.install('scriptaculous', function(){
+                ok(true, 'there should only be two assertions...');
+                start();
+            });
+        });
+    });
+    
+    module('packages');
     
     bpm.ready(function(){
         bpm.utils.each(bpm._db.keys, function(key){
             asyncTest(key, 1, function(){
                 bpm.install(key, function(){
-                    ok(true, 'passed!');
+                    ok(bpm.installed(key), 'library installed!');
+                    start();
+                }, function(error){
+                    equals(error, 'noop', 'noops are ok!');
                     start();
                 });
             });
