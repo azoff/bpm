@@ -40,21 +40,26 @@
         };
     }
     
-    function installPackage() {
-        var element = $(this).addClass('installing');
-        bpm.install(element.text());
+    function installPackage() {        
+        bpm.install($(this).text());
     }
     
-    function onInstall(matches) {
+    function setInstalled(matches) {
         $.each(matches, function(i, match){
-            var element = $('.' + match.key);
-            element.removeClass('installing').addClass('installed');
+            $('.' + match.key).removeClass('installing').addClass('installed');
+        });
+    }
+    
+    function setInstalling(matches) {
+        $.each(matches, function(i, match){
+            $('.' + match.key).addClass('installing');
         });
     }
     
     function buildShortcuts() {
         var shortcuts = $('#shortcuts');
-        bpm.addListener(onInstall);
+        bpm.addListener('install', setInstalling);
+        bpm.addListener('installed', setInstalled);
         $.each(bpm.list().slice(1), function(i, key){
             var installed = bpm.installed(key) ? ' installed' : '';
             shortcuts.append('<li class="'+key+installed+'">'+key+'</li>');
