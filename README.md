@@ -69,13 +69,15 @@ The Package Manager API
    - Checks if a package is installed by key.
    - `key` `string` The key to search packages with
 
-- `bpm.addListener` ( `listener` )
-   - Adds a global onsuccess callback for all package installs.
-   - `listener` `function(matches,urls)` A listener that is called when the package is installed. The listener takes two parameters: a list of match objects (output of bpm.match) and the final URLs for the downloaded packages
+- `bpm.addListener` ( `event`, `listener` )
+   - Adds an event listener to the bpm packager.
+   - `event` Can be "install" or "installed": install occurs at the beginning of every request, and installed occurs only when packages are actually installed. 
+   - `listener` `function(matches,urls)` A listener that is called when the package is installed. The listener takes two parameters: a list of match objects (output of bpm.match) and the final URLs for the downloaded packages. Install events only provide the first parameter.
  
-- `bpm.removeListener` ( `listener` )
-   - Removes a global onsuccess callback from all package installs.
-   - `listener` `function(matches,urls)` A listener that was previously bound using bpm.addListener
+- `bpm.removeListener` ( `event`, `listener` )
+   - Removes an event listener from the bpm packager
+   - `event` Can be "install" or "installed": install occurs at the beginning of every request, and installed occurs only when packages are actually installed.
+   - `listener` `function(matches,urls)` A listener to remove that was previously bound using bpm.addListener
  
 - `bpm.suggest` ( `key` )
    - Uses a [levenshtein distance](http://en.wikipedia.org/wiki/Levenshtein_distance) calculation to determine the closest match to a package search term
