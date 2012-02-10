@@ -63,15 +63,21 @@ $(document).ready(function(){
         });
     });
     
-    asyncTest("add and remove listeners", 2, function(){
-        var listener = function(matches, url){            
-            ok(bpm.installed(matches[0].key), 'prototype installed');
+    asyncTest("add and remove listeners", 3, function(){
+        var listener = function(matches, url){    
+            if (url) {
+                ok(bpm.installed(matches[0].key), 'prototype installed');
+            } else {
+                equals(matches[0].key, 'prototype', 'installing prototype');
+            }                 
         };
-        bpm.addListener(listener);
+        bpm.addListener('install', listener);        
+        bpm.addListener('installed', listener);
         bpm.install('prototype', function(){
-            bpm.removeListener(listener);            
+            bpm.removeListener('install', listener);            
+            bpm.removeListener('installed', listener);            
             bpm.install('scriptaculous', function(){
-                ok(true, 'there should only be two assertions...');
+                ok(true, 'there should only be three assertions...');
                 start();
             });
         });

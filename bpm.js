@@ -19,7 +19,7 @@
 
         _manifest: {},
         
-        _listeners: [],
+        _listeners: { install:[], installed:[] },
 
         _db: {
             count: 0,
@@ -76,6 +76,7 @@
                 utils.each(utils.ensureArray(request), adder = function(request){
                     var response = bpm.match(request), url;
                     utils.info('Creating manifest entry for "${key}" @ "${version}"...', response);
+                    responses.push(response);
                     // check if package exists
                     if (response.keyMatch) {
                         // check if version exists
@@ -109,7 +110,6 @@
                                         url: url 
                                     });
                                     bpm._manifest[response.key] = response.version;
-                                    responses.push(response);
                                     urls.push(url);
                                 } else {
                                     onerror('cdn', response);
@@ -134,15 +134,18 @@
                             key: response.key,
                             suggestion: bpm.suggest(response.key)
                         }));
-                    }                    
-                });                
+                    }
+                });
+                utils.each(bpm._listeners.install, function(listener) {
+                    listener(responses);
+                });              
                 // finally load the URLs if we didn't have an error
                 if (success) {
                     if (urls.length) {
                         utils.info('Manifest created! Loading ${count} new script(s)...', { count: urls.length });
                         bpm.load({ load: urls, complete: function() {
-                            utils.info('Script(s) successfully loaded, installation complete!');                                                    
-                            utils.each(bpm._listeners, function(listener) {
+                            utils.info('Script(s) successfully loaded, installation complete!');
+                            utils.each(bpm._listeners.installed, function(listener) {
                                 listener(responses, urls);
                             });
                             if (utils.isFunction(onsuccess)) { 
@@ -169,21 +172,22 @@
             return url;
         },
         
-        addListener: function(listener) {
-            var success = utils.isFunction(listener);
-            if (success) {
-                bpm._listeners.push(listener);
+        addListener: function(event, listener) {
+            if (utils.isFunction(listener) && utils.isString(event) && (event in bpm._listeners)) {
+                bpm._listeners[event].push(listener);
+                return true;
             }
-            return success;
+            return false;
         },
         
-        removeListener: function(listener) {
-            var index = bpm._listeners.indexOf(listener),
-            success = index >= 0;
-            if (success) {
-                bpm._listeners.splice(index,1);
+        removeListener: function(event, listener) {
+            var index;
+            if (utils.isString(event)&& (event in bpm._listeners) && 
+                (index = bpm._listeners[event].indexOf(listener)) > -1) {
+                bpm._listeners[event].splice(index, 1);
+                return true;
             }
-            return success;
+            return false;
         },
                 
         load: function() {
@@ -316,7 +320,6 @@
                     }
                 }
             },
-
 
             format: function(template, model) {
                 if (!model) { return template; }
