@@ -1,4 +1,46 @@
 /* The console container element */
+body {
+    background: black url('bg.png') repeat left top;
+    font-size: 16px;
+    font-family: 'Magra', sans-serif;
+    font-weight: 400;
+    margin: 0;
+    padding: 0;
+}
+
+h1, h2, h3 {
+    font-family: 'Magra', sans-serif;
+    font-weight: 700;
+    margin: 0;
+    padding: 0;
+}
+
+a { text-decoration: none; }
+
+h1 {
+    line-height: 0.8;
+    font-size: 7em;
+}
+
+h1 a {
+    color: #333;
+}
+
+h1 a:hover {
+    color: #888;
+}
+
+h2 {
+    font-size: 2em;
+    color: #888;
+    margin-left: 0.2em;
+}
+
+h3 {
+    font-size: 1.5em;
+    margin: 20px 0;
+}
+
 #forkme {
     display: block;
     position: absolute; 
@@ -6,43 +48,162 @@
     right: 0; 
     border: 0;
 }
-#console {
-    position: absolute;
-    width: 400px;
-    height: 500px;
-    background-color:black;
+
+#content {
+    -webkit-box-shadow: inset 6px 0 3px -3px rgba(0, 0, 0, 0.9), inset -6px 0 3px -3px rgba(0, 0, 0, 0.9);
+    -moz-box-shadow: inset 6px 0 3px -3px rgba(0, 0, 0, 0.9), inset -6px 0 3px -3px rgba(0, 0, 0, 0.9);
+    box-shadow: inset 6px 0 3px -3px rgba(0, 0, 0, 0.9), inset -6px 0 3px -3px rgba(0, 0, 0, 0.9);
+    overflow: hidden;
+    padding: 20px;
+    width: 728px;
+    margin: 0 auto -6px;
+    background-color: white;
+    background-color: rgba(255, 255, 255, 0.95);
 }
+
+#content p {
+    padding: 20px 0.5em;
+    margin: 0;
+    line-height: 1.4;
+}
+
+#download {
+    float: right;
+}
+
+#download img {
+    width: 90px;
+    border: none 0;
+    display: block;
+    float: right;
+}
+
+#download img:hover {
+    margin-top: -0.4em;
+}
+
+#shortcuts {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+#shortcuts li {
+    width: 19.5%;
+    line-height: 2em;
+    height: 2em;
+    margin: 1px;
+    float: left;
+    background: #333;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;    
+    text-align: center;    
+    overflow: hidden;
+}
+
+#shortcuts li::after,
+#download img {
+    -webkit-transition: margin-top 500ms;
+    -moz-transition: margin-top 500ms;
+    -o-transition: margin-top 500ms;
+    -ms-transition: margin-top 500ms;
+    transition: margin-top 500ms;
+    margin-top: 0;    
+}
+
+#shortcuts li::after {
+    content: 'install';
+    display: block;
+    background-color: #777;
+    color: white;
+    text-align: center;
+    position: relative;
+}
+
+#shortcuts li.installing::after,
+#shortcuts li:hover::after {
+    margin-top: -2em;
+}
+
+#shortcuts li.installing::after {
+    content: 'installing';
+    background-color: #DEE300;
+}
+
+#shortcuts li.installed {
+    cursor: default;
+    background-color: green;
+}
+
+#shortcuts li.installed:hover::after {
+    margin-top: 0;
+}
+
+#shortcuts li.installed::after {
+    content: 'installed!';    
+    background-color: green;
+}
+
 /* The inner console element. */
 .jqconsole {
-    padding: 10px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    -webkit-box-shadow: inset 0 0 5px 0 rgba(0, 0, 0, 0.9);
+    -moz-box-shadow: inset 0 0 5px 0 rgba(0, 0, 0, 0.9);
+    box-shadow: inset 0 0 5px 0 rgba(0, 0, 0, 0.9);
+    height: 344px;
+    background-color: #888;
+    border: solid 1px black;
+    padding: 20px;
+    position: relative !important;
 }
-/* The cursor. */
+
+.jqconsole-header {
+    color: black;
+    padding-bottom: 10px;
+    display: block;
+}
+
+@-webkit-keyframes blinker { 
+    from { opacity: 0.8; } to { opacity: 0.0; } 
+} 
+@-moz-keyframes blinker { 
+    from { opacity: 0.8; } to { opacity: 0.0; } 
+} 
+@-ms-keyframes blinker { 
+    from { opacity: 0.8; } to { opacity: 0.0; } 
+} 
+
 .jqconsole-cursor {
-    background-color: gray;
+    -webkit-animation: blinker 1s infinite cubic-bezier(1.0,0,0,1.0);
+    -moz-animation: blinker 1s infinite cubic-bezier(1.0,0,0,1.0);
+    -ms-animation: blinker 1s infinite cubic-bezier(1.0,0,0,1.0);
+    background-color: #0F0;
 }
-/* The cursor color when the console looses focus. */
+
 .jqconsole-blurred .jqconsole-cursor {
-    background-color: #666;
+    background-color: #0D0;
 }
-/* The current prompt text color */
-.jqconsole-prompt {
-    color: #0d0;
+
+.jqconsole-prompt {    
+    color: #0F0;
 }
-/* The command history */
+
+.jqconsole-blurred .jqconsole-prompt {
+    color: #0D0;
+}
+
 .jqconsole-old-prompt {
-    color: #0b0;
+    color: #0B0;
     font-weight: normal;
 }
-/* The text color when in input mode. */
-.jqconsole-input {
-    color: #dd0;
-}
-/* Previously entered input. */
-.jqconsole-old-input {
-    color: #bb0;
-    font-weight: normal;
-}
-/* The text color of the output. */
+
 .jqconsole-output {
-    color: white;
+    color: #EEE;
+}
+
+.jqconsole-error {
+    color: #B00;
 }

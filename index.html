@@ -3,9 +3,10 @@
     <head>
         <meta charset='utf-8'>
         <title>BPM - The Browser's Package Manager</title>
-        <link rel="stylesheet" media="screen" href="assets/normalize.css" type="text/css" />
-        <link rel="stylesheet" media="screen" href="assets/ansi.css"      type="text/css" />
-        <link rel="stylesheet" media="screen" href="assets/screen.css"    type="text/css" />
+        <link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Magra:400,700|Passion+One:700' type='text/css' />
+        <link rel="stylesheet" href="assets/normalize.css" type="text/css" />
+        <link rel="stylesheet" href="assets/ansi.css" type="text/css" />
+        <link rel="stylesheet" href="assets/screen.css" type="text/css" />
     </head>
     <body>
         <a id="forkme" href="https://github.com/azoff/bpm">
@@ -13,12 +14,29 @@
         </a>
         <div id="content">
             <header>
-                <h1>BPM</h1>
+                 <div id="download">                     
+                     <a href="https://github.com/azoff/bpm/tarball/master">
+                         <img title="Download the BPM project as a tar file" src="https://github.com/images/modules/download/tar.png" alt="Download Tar File"/>
+                     </a>
+                     <a href="https://github.com/azoff/bpm/zipball/master">
+                         <img title="Download the BPM project as a zip file" src="https://github.com/images/modules/download/zip.png" alt="Download Zip File" />
+                     </a>
+                </div>                
+                <h1><a href="http://github.com/azoff/bpm">BPM</a></h1>
                 <h2>The Browser's Package Manager</h2>
             </header> 
-            <section>
-                <div id="console"></div>
-            </section>
+            <p>
+                BPM is a lightweight package manager for use in the browser. It aims to have no dependencies other than a browser that can run JavaScript. No 
+                need for <a href="http://nodejs.org/" target="_blank">NodeJS</a> or <a href="http://npmjs.org/" target="_blank">NPM</a>, just include 
+                <a href="bpm.js">bpm.js</a> like you would any other JavaScript library, and start installing your favorite JavaScript packages. BPM already 
+                has access to some of the <a href="https://github.com/azoff/bpm/blob/master/packages.js">more popular libraries</a>, with more being added every 
+                week. The BPM platform is completely open and free to all, just fork <a href="https://github.com/azoff/bpm">the project</a> to add your own 
+                libraries and additions. Ready to start using BPM? Take a look at <a href="https://github.com/azoff/bpm/blob/master/README.md">the documentation</a> 
+                or try the interactive demo below.
+            </p>
+            <div id="console"></div>
+            <h3>Packages</h3>
+            <ul id="shortcuts"></ul>
         </div>
         <script src="bpm.js"></script>
         <script src="assets/index.js"></script>

@@ -19,7 +19,7 @@
     
     function logger(console, container) {
         return {
-            info: function(msg) {
+            info: global.log = function(msg) {
                 if (msg.length) {
                     console.Write(msg + '\n', 'jqconsole-output');
                 }
@@ -38,17 +38,36 @@
         };
     }
     
-    function main() {
-        var selector = '#console',
-        msg = 'Take bpm for a test drive! Need help? Run bpm.usage().\n',
-        prompt = 'bpm$ ', console, container;
-        $(function() {
-            container = $(selector);
-            console = container.jqconsole(msg, prompt);
-            bpm.logger = logger = logger(console, container);
-            repl(console);
-            logger.prefill('bpm.install("dojo");');            
+    function installPackage() {
+        var element = $(this).addClass('installing'),
+        key = element.text();
+        bpm.install(key, function(){
+            element.removeClass('installing').addClass('installed');
+        })
+    }
+    
+    function buildShortcuts() {
+        var shortcuts = $('#shortcuts');
+        $.each(bpm.list().slice(1), function(i, key){
+            shortcuts.append('<li>'+key+'</li>');
         });
+        shortcuts.on('click', 'li:not(.installed,.installing)', installPackage);
+    }
+    
+    function startConsole() {
+        var selector = '#console',
+        prompt = '$> ',
+        msg = 'Take bpm for a test drive! Hit the enter key to install dojo. Need help? Run bpm.usage().\n',
+        container = $(selector),
+        console = container.jqconsole(msg, prompt);
+        bpm.logger = logger = logger(console, container);
+        repl(console);
+        logger.prefill(' bpm.install("dojo", function(){\n\tlog("Dojo " + dojo.version + " Ready!");\n});');
+    }
+    
+    function main() {
+        $(startConsole);
+        $(buildShortcuts);
     }    
     
     bpm.define('jqconsole', {
