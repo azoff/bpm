@@ -1,5 +1,7 @@
 (function(global, bpm, undef){
     
+    var $;
+    
     function repl(console) {
         console.Prompt(true, function(input) {
             try { var output;
@@ -39,17 +41,23 @@
     }
     
     function installPackage() {
-        var element = $(this).addClass('installing'),
-        key = element.text();
-        bpm.install(key, function(){
+        var element = $(this).addClass('installing');
+        bpm.install(element.text());
+    }
+    
+    function onInstall(matches) {
+        $.each(matches, function(i, match){
+            var element = $('.' + match.key);
             element.removeClass('installing').addClass('installed');
-        })
+        });
     }
     
     function buildShortcuts() {
         var shortcuts = $('#shortcuts');
+        bpm.addListener(onInstall);
         $.each(bpm.list().slice(1), function(i, key){
-            shortcuts.append('<li>'+key+'</li>');
+            var installed = bpm.installed(key) ? ' installed' : '';
+            shortcuts.append('<li class="'+key+installed+'">'+key+'</li>');
         });
         shortcuts.on('click', 'li:not(.installed,.installing)', installPackage);
     }
@@ -66,6 +74,7 @@
     }
     
     function main() {
+        $ = global.jQuery;
         $(startConsole);
         $(buildShortcuts);
     }    
