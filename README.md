@@ -169,7 +169,6 @@ TODOs
 -----
 I still plan on doing a lot more to make _bpm_ awesome. Here are some of the things coming up:
 
-- Cache packages.json in local storage
 - Investigate reading loaded script source
 - Investigate combining scripts into base64 encoded blobs
 - Hide cursor on blur
