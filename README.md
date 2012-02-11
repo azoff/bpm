@@ -163,7 +163,6 @@ TODOs
 -----
 I still plan on doing a lot more to make _bpm_ awesome. Here are some of the things coming up:
 
-- Stop the autofocus feature of jqconsole
 - Add credits and notable projects
 - Tag beta release version
 - Add a custom domain for the home page
