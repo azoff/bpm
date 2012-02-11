@@ -37,28 +37,19 @@ After bpm is included in your page, you will immediately have access to the inte
 
 ```javascript
 bpm.install('jquery', function(){
-    
     console.log("I just used bpm to load jQuery!")
-
     $(document).ready(function(){
-        
         console.log("I just used jQuery!")
-    
     });
-    
 });
 ```
-
-_bpm_ goes above and beyond to be as useful as possible, in some cases correcting user-error by suggesting possible misspelling in package names or incorrect version numbers. You can play around with this functionality by using the `suggest` method, or you may even use the `list` method to quickly view the entire package catalog. Once you are done prototyping, the `manifest` method will help you quickly see the scripts you used.
-
-```javascript
-bpm.suggest('jqury'); // returns "jquery"
-bpm.list();           // outputs a comma separated list of packages
-bpm.manifest();       // outputs a list of packages you installed in the current browser session
-```
+_bpm_'s utility does not stop there. Once you are done prototyping, you can then prepare the scripts you included for use in a production
+environment. Run the `manifest` command to see a list of scripts you included, or run `combine` to produce a link packaging all of the scripts into one master script
 
 The Package Manager API
 -----------------------
+The following commands comprise the public _bpm_ API.
+
 - `bpm.install` ( `request`, `onsuccess` )
    - Installs one or more packages from the repository.
    - `request` `array|string|object` The request object is a message of intent to the installer. It can be a string name of a package to load, and object with a `key` and and optional `version` property, or an array of any either two. Note that you may omit the `version` property in the object to implicitly request the latest version of the library. Using the string form, or explicitly requesting 'latest' as the version has the same effect.
@@ -83,8 +74,11 @@ The Package Manager API
    - Uses a [levenshtein distance](http://en.wikipedia.org/wiki/Levenshtein_distance) calculation to determine the closest match to a package search term
    - `key` `string` A required string to search for
  
+- `bpm.combine` ( )
+  - Provides a combined link for all of the script added in the manifest.
+  
 - `bpm.list` ( )
-   - Outputs a list of available packages available to install
+    - Outputs a list of available packages available to install
    
 - `bpm.manifest` ( )
    - Outputs a list of installed packages and their URLs
