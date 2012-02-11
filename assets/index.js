@@ -3,6 +3,7 @@
     var $;
     
     function repl(console) {
+        console.Focus = $.noop;
         console.Prompt(true, function(input) {
             try { var output;
                 if (input !== undef && input.length) {
