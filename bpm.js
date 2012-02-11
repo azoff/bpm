@@ -9,7 +9,7 @@
 // https://github.com/azoff/bpm/
 //
 // Tri-license - WTFPL | MIT | BSD
-(function(global, logger, undef) {
+(function(global, logger, escape, undef) {
 
     var utils,
     arrays = Array.prototype,
@@ -230,6 +230,15 @@
         versions: function(key) {
             var def = bpm.lookup(key);
             return (def && def.versions) ? def.versions : [];
+        },
+        
+        combine: function() {
+            var urls = bpm.manifest(), i, parts = [],
+            url = 'http://reducisaurus.appspot.com/js?';
+            for (i=0; i<urls.length; i++) {
+                parts.push(['url',i,'=',escape(urls[i])].join(''));
+            }
+            return url + parts.join('&');
         },
         
         requires: function(key) {
@@ -995,4 +1004,4 @@
     bpm.init();
 
 
-})(this, this.console);
+})(this, this.console, this.encodeURIComponent);
