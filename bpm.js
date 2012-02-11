@@ -235,7 +235,7 @@
         combine: function() {
             var urls = bpm.manifest(), i, parts = [],
             url = 'http://reducisaurus.appspot.com/js?';
-            for (i=0; i<url.length; i++) {
+            for (i=0; i<urls.length; i++) {
                 parts.push(['url',i,'=',escape(urls[i])].join(''));
             }
             return url + parts.join('&');
