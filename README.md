@@ -44,7 +44,17 @@ bpm.install('jquery', function(){
 });
 ```
 _bpm_'s utility does not stop there. Once you are done prototyping, you can then prepare the scripts you included for use in a production
-environment. Run the `manifest` command to see a list of scripts you included, or run `combine` to produce a link packaging all of the scripts into one master script
+environment. Run the `manifest` command to see a list of scripts you included, or run `combine` to produce a link packaging all of the scripts into one master script:
+
+```javascript
+/*
+ * Use this URL to download the combined script locally. 
+ * If you wish, you may just include it directly in production,
+ * but I make no guarantees to the uptime of the combining
+ * service.
+ */
+var combinedUrl = bpm.combine();
+```
 
 The Package Manager API
 -----------------------
@@ -75,7 +85,7 @@ The following commands comprise the public _bpm_ API.
    - `key` `string` A required string to search for
  
 - `bpm.combine` ( )
-  - Provides a combined link for all of the script added in the manifest.
+  - Provides a combined link for all of the script added in the manifest. Currently relies on the 'reducisaurus' appengine app.
   
 - `bpm.list` ( )
     - Outputs a list of available packages available to install
