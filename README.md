@@ -175,11 +175,12 @@ I still plan on doing a lot more to make _bpm_ awesome. Here are some of the thi
 
 - Add credits and notable projects
 - Tag beta release version
+- Browser testing (also make note in readme)
 - Add a custom domain for the home page
 - Link to this plug-in from azoffdesign.com
-- Investigate the heroku addon option
-- Browser testing (also make note in readme)
+- Inform reducisaurus
 - Release the hounds
+- Investigate the heroku addon option
 
 
 Issues
